@@ -7,7 +7,7 @@ fi
 
 input="$1"
 
-# Extrai ano, mês e dia a partir do parâmetro (século 21)
+# Extrai ano, mês e dia a partir do parâmetro (assumindo século 21)
 ano="20${input:0:2}"
 mes="${input:2:2}"
 dia="${input:4:2}"
@@ -34,15 +34,15 @@ if is_gnu_date; then
 
     # --- Dia do mês e percentual do mês ---
     diaDoMes=$(date -d "$dataStr" +%d | sed 's/^0*//')
-    # Calcula o último dia do mês: pega o primeiro dia do mês, soma 1 mês e subtrai 1 dia
+    # Obtém o último dia do mês a partir do primeiro dia do mês
     ultimoDiaMes=$(date -d "$(date -d "$ano-$mes-01" +%Y-%m-%d) +1 month -1 day" +%d | sed 's/^0*//')
     percentualMes=$(echo "scale=2; ($diaDoMes/$ultimoDiaMes)*100" | bc)
     percentualMesInt=$(echo "$percentualMes" | awk '{printf "%.0f", $1}')
 
-    # --- Dia do ano e percentual do ano ---
+    # --- Dia do ano e percentual do ano (arredondado para 2 casas decimais) ---
     diaDoAno=$(date -d "$dataStr" +%j | sed 's/^0*//')
     totalDiasAno=$(date -d "$ano-12-31" +%j | sed 's/^0*//')
-    percentualAno=$(echo "scale=2; ($diaDoAno/$totalDiasAno)*100" | bc)
+    percentualAno=$(echo "scale=4; ($diaDoAno/$totalDiasAno)*100" | bc)
     percentualAnoFormatado=$(echo "$percentualAno" | awk '{printf "%.2f", $1}')
 
     # --- Número da semana ---
@@ -57,7 +57,6 @@ else
 
     # --- Dia da semana e percentual da semana ---
     diaSemanaNum=$(date -j -f "%Y-%m-%d" "$dataStr" +%w)
-    # Ajusta: se domingo (0) passa a ser 7
     if [ "$diaSemanaNum" -eq 0 ]; then
         diaSemanaNum=7
     fi
@@ -67,16 +66,15 @@ else
 
     # --- Dia do mês e percentual do mês ---
     diaDoMes=$(date -j -f "%Y-%m-%d" "$dataStr" +%d | sed 's/^0*//')
-    # Calcula o último dia do mês a partir do primeiro dia do mês,
-    # utilizando a ordem correta dos parâmetros para BSD date:
+    # Calcula o último dia do mês usando a ordem correta dos parâmetros do BSD date
     ultimoDiaMes=$(date -j -v+1m -v-1d -f "%Y-%m-%d" "$ano-$mes-01" "+%d" | sed 's/^0*//')
     percentualMes=$(echo "scale=2; ($diaDoMes/$ultimoDiaMes)*100" | bc)
     percentualMesInt=$(echo "$percentualMes" | awk '{printf "%.0f", $1}')
 
-    # --- Dia do ano e percentual do ano ---
+    # --- Dia do ano e percentual do ano (arredondado para 2 casas decimais) ---
     diaDoAno=$(date -j -f "%Y-%m-%d" "$dataStr" +%j | sed 's/^0*//')
     totalDiasAno=$(date -j -f "%Y-%m-%d" "$ano-12-31" +%j | sed 's/^0*//')
-    percentualAno=$(echo "scale=2; ($diaDoAno/$totalDiasAno)*100" | bc)
+    percentualAno=$(echo "scale=4; ($diaDoAno/$totalDiasAno)*100" | bc)
     percentualAnoFormatado=$(echo "$percentualAno" | awk '{printf "%.2f", $1}')
 
     # --- Número da semana ---
