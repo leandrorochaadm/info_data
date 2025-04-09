@@ -19,6 +19,9 @@ dia="${input:4:2}"
 
 dataStr="$ano-$mes-$dia"
 
+# Data alvo para cálculo (18/07/2025)
+dataAlvo="2025-07-18"
+
 # Função para testar se o GNU date está disponível
 is_gnu_date() {
     date --version >/dev/null 2>&1 && return 0 || return 1
@@ -53,6 +56,18 @@ if is_gnu_date; then
     # --- Número da semana ---
     numeroSemana=$(date -d "$dataStr" +%V)
 
+    # --- Cálculo da diferença em dias até 18/07/2025 ---
+    tsData=$(date -d "$dataStr" +%s)
+    tsAlvo=$(date -d "$dataAlvo" +%s)
+    diffSegundos=$(( tsAlvo - tsData ))
+    if [ $diffSegundos -lt 0 ]; then
+        diasRestantes="0"
+        mensagem="A data informada já passou de 18/07/25."
+    else
+        diasRestantes=$(( diffSegundos / 86400 ))
+        mensagem="Dias restantes para 18/07/25: $diasRestantes"
+    fi
+
 else
     # BSD date (macOS)
     if ! date -j -f "%Y-%m-%d" "$dataStr" +"%Y" >/dev/null 2>&1; then
@@ -71,7 +86,6 @@ else
 
     # --- Dia do mês e percentual do mês ---
     diaDoMes=$(date -j -f "%Y-%m-%d" "$dataStr" +%d | sed 's/^0*//')
-    # Calcula o último dia do mês usando a ordem correta dos parâmetros do BSD date
     ultimoDiaMes=$(date -j -v+1m -v-1d -f "%Y-%m-%d" "$ano-$mes-01" "+%d" | sed 's/^0*//')
     percentualMes=$(echo "scale=2; ($diaDoMes/$ultimoDiaMes)*100" | bc)
     percentualMesInt=$(echo "$percentualMes" | awk '{printf "%.0f", $1}')
@@ -84,8 +98,21 @@ else
 
     # --- Número da semana ---
     numeroSemana=$(date -j -f "%Y-%m-%d" "$dataStr" +%V)
+
+    # --- Cálculo da diferença em dias até 18/07/2025 ---
+    tsData=$(date -j -f "%Y-%m-%d" "$dataStr" +%s)
+    tsAlvo=$(date -j -f "%Y-%m-%d" "$dataAlvo" +%s)
+    diffSegundos=$(( tsAlvo - tsData ))
+    if [ $diffSegundos -lt 0 ]; then
+        diasRestantes="0"
+        mensagem="A data informada já passou de 18/07/25."
+    else
+        diasRestantes=$(( diffSegundos / 86400 ))
+        mensagem="Dias restantes para 18/07/25: $diasRestantes dias"
+    fi
 fi
 
 # Exibe os resultados
 echo "Dia da semana: $nomeDiaSemana | Data: $dataStr | ${percentualMesInt}% do mês percorrido"
 echo "Número da semana: $numeroSemana | Dia do ano: $diaDoAno | ${percentualAnoFormatado}% do ano percorrido"
+echo "$mensagem"
