@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# Força um locale neutro
+export LC_ALL=C
+export LANG=C
+
 # Verifica se o parâmetro foi passado
 if [ "$#" -ne 1 ]; then
     echo "Uso: $0 data no formato YYMMDD (ex: 250404)"
@@ -82,8 +87,5 @@ else
 fi
 
 # Exibe os resultados
-echo "Data: $dataStr"
-echo "Dia da semana: $nomeDiaSemana - ${percentualSemanaInt}% da semana percorrida"
-echo "Dia do mês: $diaDoMes de $ultimoDiaMes - ${percentualMesInt}% do mês percorrido"
-echo "Dia do ano: $diaDoAno de $totalDiasAno - ${percentualAnoFormatado}% do ano percorrido"
-echo "Número da semana: $numeroSemana"
+echo "Dia da semana: $nomeDiaSemana | Data: $dataStr | ${percentualMesInt}% do mês percorrido"
+echo "Número da semana: $numeroSemana | Dia do ano: $diaDoAno | ${percentualAnoFormatado}% do ano percorrido"
