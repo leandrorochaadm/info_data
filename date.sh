@@ -110,7 +110,7 @@ else
         mensagem="A data informada já passou de 18/07/25."
     else
         diasRestantes=$(( diffSegundos / 86400 ))
-        mensagem="Dias restantes para 18/07/25: $diasRestantes dias"
+        mensagem="Dias que faltam pra o casamento em 18/07/25: $diasRestantes dias"
     fi
 fi
 
