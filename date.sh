@@ -101,7 +101,7 @@ else
         mensagem="A data informada já passou de 18/07/25."
     else
         diasRestantes=$(( diffSegundos / 86400 ))
-        mensagem="Dias que faltam para 18/07/25: $diasRestantes dias"
+        mensagem="Dias que faltam para casamento: $diasRestantes dias"
     fi
 fi
 
@@ -123,6 +123,19 @@ elif [ "$nomeDiaSemana" = "Sunday" ]; then
 fi
 
 # Exibe os resultados com a data formatada em "dia/mês/ano"
-echo "Dia da semana: $nomeDiaSemana | Data: $dataStrFormatted | ${percentualMesInt}% do mês percorrido"
-echo "Número da semana: $numeroSemana | Dia do ano: $diaDoAno | ${percentualAnoFormatado}% do ano percorrido"
+echo "Dia da semana: $nomeDiaSemana"
+echo "Data: $dataStrFormatted"
+echo "Mês percorrido: ${percentualMesInt}%"
+echo "Número da semana: $numeroSemana"
+echo "Dia do ano: $diaDoAno"
+echo "Ano percorrido: ${percentualAnoFormatado}%"
+echo ""
+echo "-------------------------------"
+echo ""
+echo "Quanto falta para o final do ano?"
+echo "Dias: $((365 - diaDoAno))"
+echo "Semanas: $((52 - numeroSemana))"
+echo ""
+echo "-------------------------------"
+echo ""
 echo "$mensagem"
