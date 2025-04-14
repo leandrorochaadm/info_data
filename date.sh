@@ -16,8 +16,10 @@ input="$1"
 ano="20${input:0:2}"
 mes="${input:2:2}"
 dia="${input:4:2}"
-
 dataStr="$ano-$mes-$dia"
+
+# Cria variável com data no formato "dia/mês/ano" (ex: 14/04/25)
+dataStrFormatted="${dia}/${mes}/${ano:2:2}"
 
 # Data alvo para cálculo (18/07/2025)
 dataAlvo="2025-07-18"
@@ -112,7 +114,7 @@ else
     fi
 fi
 
-# Exibe os resultados
-echo "Dia da semana: $nomeDiaSemana | Data: $dataStr | ${percentualMesInt}% do mês percorrido"
+# Exibe os resultados com a data no formato "dia/mês/ano"
+echo "Dia da semana: $nomeDiaSemana | Data: $dataStrFormatted | ${percentualMesInt}% do mês percorrido"
 echo "Número da semana: $numeroSemana | Dia do ano: $diaDoAno | ${percentualAnoFormatado}% do ano percorrido"
 echo "$mensagem"
