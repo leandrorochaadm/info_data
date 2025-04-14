@@ -10,6 +10,19 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
+# Script de produtividade
+# Se for passado o parâmetro "p", executa o script produtividade.sh
+
+if [ "$1" = "p" ]; then
+    if [ -x "./productivity.sh" ]; then
+        ./productivity.sh
+    else
+        echo "Script 'productivity.sh' não encontrado ou sem permissão de execução."
+        exit 1
+    fi
+    exit 0
+fi
+
 input="$1"
 
 # Extrai ano, mês e dia a partir do parâmetro (assumindo século 21)
