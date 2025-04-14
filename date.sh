@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Força um locale neutro
+# Força o locale neutro (em inglês) para padronizar a saída do comando date
 export LC_ALL=C
 export LANG=C
 
@@ -12,7 +12,7 @@ fi
 
 input="$1"
 
-# Extrai ano, mês e dia a partir do parâmetro (assumindo século 21)
+# Extrai ano, mês e dia (assumindo século 21)
 ano="20${input:0:2}"
 mes="${input:2:2}"
 dia="${input:4:2}"
@@ -36,29 +36,25 @@ if is_gnu_date; then
         exit 1
     fi
 
-    # --- Dia da semana e percentual da semana ---
+    # --- Obtém dia da semana e demais percentuais ---
     diaSemanaNum=$(date -d "$dataStr" +%u)
     nomeDiaSemana=$(date -d "$dataStr" +%A)
     percentualSemana=$(echo "scale=2; ($diaSemanaNum/7)*100" | bc)
     percentualSemanaInt=$(echo "$percentualSemana" | awk '{printf "%.0f", $1}')
 
-    # --- Dia do mês e percentual do mês ---
     diaDoMes=$(date -d "$dataStr" +%d | sed 's/^0*//')
-    # Obtém o último dia do mês a partir do primeiro dia do mês
+    # Último dia do mês
     ultimoDiaMes=$(date -d "$(date -d "$ano-$mes-01" +%Y-%m-%d) +1 month -1 day" +%d | sed 's/^0*//')
     percentualMes=$(echo "scale=2; ($diaDoMes/$ultimoDiaMes)*100" | bc)
     percentualMesInt=$(echo "$percentualMes" | awk '{printf "%.0f", $1}')
 
-    # --- Dia do ano e percentual do ano (arredondado para 2 casas decimais) ---
     diaDoAno=$(date -d "$dataStr" +%j | sed 's/^0*//')
     totalDiasAno=$(date -d "$ano-12-31" +%j | sed 's/^0*//')
     percentualAno=$(echo "scale=4; ($diaDoAno/$totalDiasAno)*100" | bc)
     percentualAnoFormatado=$(echo "$percentualAno" | awk '{printf "%.2f", $1}')
 
-    # --- Número da semana ---
     numeroSemana=$(date -d "$dataStr" +%V)
 
-    # --- Cálculo da diferença em dias até 18/07/2025 ---
     tsData=$(date -d "$dataStr" +%s)
     tsAlvo=$(date -d "$dataAlvo" +%s)
     diffSegundos=$(( tsAlvo - tsData ))
@@ -77,7 +73,6 @@ else
         exit 1
     fi
 
-    # --- Dia da semana e percentual da semana ---
     diaSemanaNum=$(date -j -f "%Y-%m-%d" "$dataStr" +%w)
     if [ "$diaSemanaNum" -eq 0 ]; then
         diaSemanaNum=7
@@ -86,22 +81,18 @@ else
     percentualSemana=$(echo "scale=2; ($diaSemanaNum/7)*100" | bc)
     percentualSemanaInt=$(echo "$percentualSemana" | awk '{printf "%.0f", $1}')
 
-    # --- Dia do mês e percentual do mês ---
     diaDoMes=$(date -j -f "%Y-%m-%d" "$dataStr" +%d | sed 's/^0*//')
     ultimoDiaMes=$(date -j -v+1m -v-1d -f "%Y-%m-%d" "$ano-$mes-01" "+%d" | sed 's/^0*//')
     percentualMes=$(echo "scale=2; ($diaDoMes/$ultimoDiaMes)*100" | bc)
     percentualMesInt=$(echo "$percentualMes" | awk '{printf "%.0f", $1}')
 
-    # --- Dia do ano e percentual do ano (arredondado para 2 casas decimais) ---
     diaDoAno=$(date -j -f "%Y-%m-%d" "$dataStr" +%j | sed 's/^0*//')
     totalDiasAno=$(date -j -f "%Y-%m-%d" "$ano-12-31" +%j | sed 's/^0*//')
     percentualAno=$(echo "scale=4; ($diaDoAno/$totalDiasAno)*100" | bc)
     percentualAnoFormatado=$(echo "$percentualAno" | awk '{printf "%.2f", $1}')
 
-    # --- Número da semana ---
     numeroSemana=$(date -j -f "%Y-%m-%d" "$dataStr" +%V)
 
-    # --- Cálculo da diferença em dias até 18/07/2025 ---
     tsData=$(date -j -f "%Y-%m-%d" "$dataStr" +%s)
     tsAlvo=$(date -j -f "%Y-%m-%d" "$dataAlvo" +%s)
     diffSegundos=$(( tsAlvo - tsData ))
@@ -110,11 +101,28 @@ else
         mensagem="A data informada já passou de 18/07/25."
     else
         diasRestantes=$(( diffSegundos / 86400 ))
-        mensagem="Dias que faltam pra o casamento em 18/07/25: $diasRestantes dias"
+        mensagem="Dias que faltam para 18/07/25: $diasRestantes dias"
     fi
 fi
 
-# Exibe os resultados com a data no formato "dia/mês/ano"
+# Mapeamento do nome do dia da semana para português com if/else
+if [ "$nomeDiaSemana" = "Monday" ]; then
+    nomeDiaSemana="Segunda-feira"
+elif [ "$nomeDiaSemana" = "Tuesday" ]; then
+    nomeDiaSemana="Terça-feira"
+elif [ "$nomeDiaSemana" = "Wednesday" ]; then
+    nomeDiaSemana="Quarta-feira"
+elif [ "$nomeDiaSemana" = "Thursday" ]; then
+    nomeDiaSemana="Quinta-feira"
+elif [ "$nomeDiaSemana" = "Friday" ]; then
+    nomeDiaSemana="Sexta-feira"
+elif [ "$nomeDiaSemana" = "Saturday" ]; then
+    nomeDiaSemana="Sábado"
+elif [ "$nomeDiaSemana" = "Sunday" ]; then
+    nomeDiaSemana="Domingo"
+fi
+
+# Exibe os resultados com a data formatada em "dia/mês/ano"
 echo "Dia da semana: $nomeDiaSemana | Data: $dataStrFormatted | ${percentualMesInt}% do mês percorrido"
 echo "Número da semana: $numeroSemana | Dia do ano: $diaDoAno | ${percentualAnoFormatado}% do ano percorrido"
 echo "$mensagem"
