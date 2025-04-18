@@ -3,7 +3,9 @@
 # O arredondamento é aplicado somente na média final
 
 # Pergunta 1: Horas trabalhadas (ideal 8 horas)
-read -p "Quanto horas eu trabalhei hoje? " horas_trabalhadas
+read -p "Quanto horas eu trabalhei hoje? (formato HH:mm) " trabalho
+# Converte HH:mm para horas fracionadas
+horas_trabalhadas=$(echo $trabalho | awk -F: '{print $1 + $2/60}')
 porc_horas=$(awk "BEGIN {print (($horas_trabalhadas/8)*100)}")
 
 # Pergunta 2: Porcentagem dos hábitos realizados (valor já em %)
@@ -19,11 +21,13 @@ else
 fi
 
 # Pergunta 4: Horas estudadas (ideal 4 horas)
-read -p "Quantas horas você estudou hoje? " horas_estudadas
+read -p "Quantas horas você estudou hoje? (formato HH:mm) " estudo
+# Converte HH:mm para horas fracionadas
+horas_estudadas=$(echo $estudo | awk -F: '{print $1 + $2/60}')
 porc_estudo=$(awk "BEGIN {print (($horas_estudadas/4)*100)}")
 
 # Pergunta 5: Horas no celular (formato HH:mm)
-read -p "Quantas horas você ficou no celular hoje (formato HH:mm)? " celular
+read -p "Quantas horas você ficou no celular hoje? (formato HH:mm) " celular
 # Converte HH:mm para horas fracionadas
 horas_celular=$(echo $celular | awk -F: '{print $1 + $2/60}')
 
