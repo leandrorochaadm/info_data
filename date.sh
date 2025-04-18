@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# forçar Bash
+# Força uso de Bash
 if [ -z "${BASH_VERSION-}" ]; then
   echo "Use Bash para rodar este script:"
   echo "  bash $0 $*"
@@ -19,11 +19,11 @@ input="$1"
 ano="20${input:0:2}"
 mes="${input:2:2}"
 dia="${input:4:2}"
-dataISO="$ano-$mes-$dia"           # YYYY-MM-DD
-dataBR="${dia}/${mes}/${ano:2:2}"  # DD/MM/YY
+dataISO="$ano-$mes-$dia"            # YYYY-MM-DD
+dataBR="${dia}/${mes}/${ano:2:2}"   # DD/MM/YY
 alvo="2025-07-18"
 
-# --- Função para timestamp (BSD date) ---
+# --- Função para timestamp (BSD date no macOS) ---
 get_ts(){
   date -j -f "%Y-%m-%d" "$1" +%s 2>/dev/null \
     || { echo "Data inválida: $1"; exit 1; }
@@ -36,7 +36,7 @@ diaSemNum=$(date -j -f "%Y-%m-%d" "$dataISO" +%u)
 diaAno=$(date -j -f "%Y-%m-%d" "$dataISO" +%j)
 semanaNum=$(date -j -f "%Y-%m-%d" "$dataISO" +%V)
 
-# converte dia do mês em inteiro (removendo possível zero à esquerda)
+# Converte dia do mês em inteiro (remove zero à esquerda)
 diaMes=$((10#$dia))
 
 # --- Tradução do dia da semana ---
@@ -66,7 +66,8 @@ esac
 
 # --- Percentuais ---
 pctMesInt=$(( diaMes * 100 / ultMes ))
-pctAno=$(awk "BEGIN{ printf \"%.2f\", $diaAno/$(date -j -f "%Y-%m-%d" "$ano-12-31" +%j)*100 }")
+totAno=$(date -j -f "%Y-%m-%d" "$ano-12-31" +%j)
+pctAnoFmt=$(awk "BEGIN{ printf \"%.2f\", $diaAno/$totAno*100 }")
 
 # --- Dias até 18/07/2025 ---
 tsData=$(get_ts "$dataISO")
@@ -75,14 +76,14 @@ deltaDias=$(( (tsAlvo - tsData) / 86400 ))
 if [ "$deltaDias" -lt 0 ]; then
   msgAlvo="Já passou de 18/07/25."
 else
-  msgAlvo="Dias até 18/07/25: $deltaDias"
+  msgAlvo="Dias até o casamento: $deltaDias"
 fi
 
 # --- Cálculo de trimestre ---
 tri=$(( (10#$mes - 1) / 3 + 1 ))
 mesFim=$(( tri * 3 ))
 
-# último dia do mês fim de trimestre
+# Último dia do mês final do trimestre
 case $mesFim in
   1|3|5|7|8|10|12) ldTri=31 ;;
   4|6|9|11)       ldTri=30 ;;
@@ -95,19 +96,34 @@ dataFimTri="$ano-$(printf "%02d" $mesFim)-$(printf "%02d" $ldTri)"
 tsFimTri=$(get_ts "$dataFimTri")
 diasTri=$(( (tsFimTri - tsData) / 86400 ))
 
+# --- Percentual do trimestre percorrido (1 casa decimal truncada) ---
+mesInicio=$(( (tri - 1) * 3 + 1 ))
+dataStartTri="$ano-$(printf "%02d" $mesInicio)-01"
+tsStartTri=$(get_ts "$dataStartTri")
+totalDiasTri=$(( (tsFimTri - tsStartTri) / 86400 + 1 ))
+diasDecorridos=$(( (tsData - tsStartTri) / 86400 + 1 ))
+pctTri=$(awk \
+  "BEGIN {
+     v = $diasDecorridos * 100 / $totalDiasTri;
+     t = int(v * 10) / 10;
+     printf(\"%.1f\", t)
+  }")
+
 # --- Saída ---
 echo "Dia da semana: $nomeDia"
 echo "Data: $dataBR"
 echo "Dia do ano: $diaAno"
 echo "Semana: $semanaNum"
-echo "Mês percorrido: ${pctMesInt}%"
-echo "Ano percorrido: ${pctAno}%"
-echo
+echo "Trimestre: $tri"
+echo ""
+echo "Porcentagem percorrido:"
+echo "  Mês: ${pctMesInt}%"
+echo "  Trimestre: ${pctTri}%"
+echo "  Ano: ${pctAnoFmt}%"
+echo ""
 echo "Falta para o fim de:"
 echo "  Mês: $(( ultMes - diaMes )) dias"
+echo "  Trimestre: $diasTri dias ou $((diasTri/7)) semanas"
 echo "  Ano: $(( 365 - diaAno )) dias ou $(( 52 - semanaNum )) semanas"
-echo
+echo ""
 echo "$msgAlvo"
-echo
-echo "Trimestre: $tri"
-echo "Dias até fim do trimestre: $diasTri"
