@@ -2,6 +2,11 @@
 # Script para calcular a produtividade diária
 # O arredondamento é aplicado somente na média final
 
+# Abre a planilha de acompanhamento no Brave Browser Nightly
+open -a "/Volumes/Dock/Applications/Brave Browser Nightly.app" \
+     "https://docs.google.com/spreadsheets/d/1aCwUVosRLNoH_TAg4aITkdi5I0dmnXvOPoz5EGl7N5s" &
+
+
 # Garante que o separador decimal seja ponto, evitando erro no awk
 export LC_NUMERIC=C
 
