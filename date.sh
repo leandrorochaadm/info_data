@@ -41,13 +41,13 @@ diaMes=$((10#$dia))
 
 # --- Tradução do dia da semana ---
 case "$nomeDia" in
-  Monday)    nomeDia="Segunda-feira" ;;
-  Tuesday)   nomeDia="Terça-feira"   ;;
-  Wednesday) nomeDia="Quarta-feira"  ;;
-  Thursday)  nomeDia="Quinta-feira"  ;;
-  Friday)    nomeDia="Sexta-feira"   ;;
-  Saturday)  nomeDia="Sábado"        ;;
-  Sunday)    nomeDia="Domingo"       ;;
+  Monday)    nomeDia="segunda-feira" ;;
+  Tuesday)   nomeDia="terça-feira"   ;;
+  Wednesday) nomeDia="quarta-feira"  ;;
+  Thursday)  nomeDia="quinta-feira"  ;;
+  Friday)    nomeDia="sexta-feira"   ;;
+  Saturday)  nomeDia="sábado"        ;;
+  Sunday)    nomeDia="domingo"       ;;
 esac
 
 # --- Último dia do mês ---
@@ -109,19 +109,12 @@ pctTri=$(awk \
      printf(\"%.1f\", t)
   }")
 
-# --- Saída ---
-echo "Dia da semana: $nomeDia"
-echo "Data: $dataBR"
-echo "Semana: $semanaNum"
-echo "Trimestre: $tri"
-echo ""
-
-echo "$msgAlvo"
-
+####################  Informações do dia ####################
+echo "Hoje é $nomeDia, dia $dataBR, semana do ano $semanaNum, dia do ano $diaAno"
 
 ####################  Tabela ####################
 # Larguras fixas para não perder o alinhamento
-c1=11   # Período
+c1=15   # Período
 c2=15   # Qtd. de dias
 c3=12   # % percorrida
 c4=25   # Falta para acabar
@@ -145,7 +138,7 @@ printf "| %-*s | %-*s | %-*s | %-*s |\n" \
        $c4 "$(( ultMes - diaMes )) dias"
 
 printf "| %-*s | %-*s | %-*s | %-*s |\n" \
-       $c1 "Trimestre" \
+       $c1 "Trimestre ($tri)" \
        $c2 "$diasDecorridos" \
        $c3 "${pctTri}%" \
        $c4 "$diasTri dias ou $(( diasTri/7 )) sem."
@@ -158,3 +151,5 @@ printf "| %-*s | %-*s | %-*s | %-*s |\n" \
 
 echo    # linha em branco no fim
 ##################################################
+
+echo "$msgAlvo"
