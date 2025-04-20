@@ -56,11 +56,9 @@ horas_estudadas=$(to_decimal_hours "$estudo")
 porc_estudo=$(awk "BEGIN {print ($horas_estudadas/4)*100}")
 
 # 5) Uso de celular
-read -p "Quantas horas inúteis você ficou no celular hoje? (ideal ≤4) (formato HH:mm) " celular
+read -p "Quantas horas inúteis você ficou no celular hoje? (ideal ≤ 4) (formato HH:mm) " celular
 horas_celular=$(to_decimal_hours "$celular")
 porc_celular=$(awk "BEGIN {print (1 - ($horas_celular/4)) * 100}")
-# Evita valor negativo
-if (( $(awk "BEGIN {print ($porc_celular < 0)}") )); then porc_celular=0; fi
 
 # 6) Água
 read -p "Quantos ml de água foram consumidos hoje? (ideal > 3000) " agua
