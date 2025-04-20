@@ -115,14 +115,15 @@ echo "Hoje é $nomeDia, dia $dataBR, semana do ano $semanaNum, dia do ano $diaAn
 ####################  Tabela ####################
 # Larguras fixas para não perder o alinhamento
 c1=15   # Período
-c2=15   # Qtd. de dias
+c2=17   # Dias percorridos
+c2=17   # Dias percorridos
 c3=12   # % percorrida
-c4=25   # Falta para acabar
+c4=19   # Falta para acabar
 
 # Cabeçalho
 printf "\n| %-*s | %-*s | %-*s | %-*s |\n" \
        $c1 "Periodo"  \
-       $c2 "Qtd. de dias" \
+       $c2 "Dias percorridos" \
        $c3 "% percorrida" \
        $c4 "Falta para acabar"
 
@@ -132,10 +133,15 @@ printf "|-%-*s-|-%-*s-|-%-*s-|-%-*s-|\n" \
   | tr ' ' '-'
 
 printf "| %-*s | %-*s | %-*s | %-*s |\n" \
-       $c1 "Mes" \
+       $c1 "Mes ($mes)" \
        $c2 "$diaMes" \
        $c3 "${pctMesInt}%" \
        $c4 "$(( ultMes - diaMes )) dias"
+
+# Linha de separação automática (troca espaços por ─)
+printf "|-%-*s-|-%-*s-|-%-*s-|-%-*s-|\n" \
+       $c1 "" $c2 "" $c3 "" $c4 "" \
+  | tr ' ' '-'
 
 printf "| %-*s | %-*s | %-*s | %-*s |\n" \
        $c1 "Trimestre ($tri)" \
@@ -143,8 +149,13 @@ printf "| %-*s | %-*s | %-*s | %-*s |\n" \
        $c3 "${pctTri}%" \
        $c4 "$diasTri dias ou $(( diasTri/7 )) sem."
 
+# Linha de separação automática (troca espaços por ─)
+printf "|-%-*s-|-%-*s-|-%-*s-|-%-*s-|\n" \
+       $c1 "" $c2 "" $c3 "" $c4 "" \
+  | tr ' ' '-'
+
 printf "| %-*s | %-*s | %-*s | %-*s |\n" \
-       $c1 "Ano" \
+       $c1 "Ano ($ano)" \
        $c2 "$diaAno" \
        $c3 "${pctAnoFmt}%" \
        $c4 "$(( 365 - diaAno )) dias ou $((52 - semanaNum)) sem."
