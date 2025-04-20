@@ -112,18 +112,49 @@ pctTri=$(awk \
 # --- Saída ---
 echo "Dia da semana: $nomeDia"
 echo "Data: $dataBR"
-echo "Dia do ano: $diaAno"
 echo "Semana: $semanaNum"
 echo "Trimestre: $tri"
 echo ""
-echo "Porcentagem percorrido:"
-echo "  Mês: ${pctMesInt}%"
-echo "  Trimestre: ${pctTri}%"
-echo "  Ano: ${pctAnoFmt}%"
-echo ""
-echo "Falta para o fim de:"
-echo "  Mês: $(( ultMes - diaMes )) dias"
-echo "  Trimestre: $diasTri dias ou $((diasTri/7)) semanas"
-echo "  Ano: $(( 365 - diaAno )) dias ou $(( 52 - semanaNum )) semanas"
-echo ""
+
 echo "$msgAlvo"
+
+
+####################  Tabela ####################
+# Larguras fixas para não perder o alinhamento
+c1=11   # Período
+c2=15   # Qtd. de dias
+c3=12   # % percorrida
+c4=25   # Falta para acabar
+
+# Cabeçalho
+printf "\n| %-*s | %-*s | %-*s | %-*s |\n" \
+       $c1 "Periodo"  \
+       $c2 "Qtd. de dias" \
+       $c3 "% percorrida" \
+       $c4 "Falta para acabar"
+
+# Linha de separação automática (troca espaços por ─)
+printf "|-%-*s-|-%-*s-|-%-*s-|-%-*s-|\n" \
+       $c1 "" $c2 "" $c3 "" $c4 "" \
+  | tr ' ' '-'
+
+printf "| %-*s | %-*s | %-*s | %-*s |\n" \
+       $c1 "Mes" \
+       $c2 "$diaMes" \
+       $c3 "${pctMesInt}%" \
+       $c4 "$(( ultMes - diaMes )) dias"
+
+printf "| %-*s | %-*s | %-*s | %-*s |\n" \
+       $c1 "Trimestre" \
+       $c2 "$diasDecorridos" \
+       $c3 "${pctTri}%" \
+       $c4 "$diasTri dias ou $(( diasTri/7 )) sem."
+
+printf "| %-*s | %-*s | %-*s | %-*s |\n" \
+       $c1 "Ano" \
+       $c2 "$diaAno" \
+       $c3 "${pctAnoFmt}%" \
+       $c4 "$(( 365 - diaAno )) dias ou $((52 - semanaNum)) sem."
+
+echo    # linha em branco no fim
+##################################################
