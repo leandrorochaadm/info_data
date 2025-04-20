@@ -76,7 +76,7 @@ deltaDias=$(( (tsAlvo - tsData) / 86400 ))
 if [ "$deltaDias" -lt 0 ]; then
   msgAlvo="Já passou de 18/07/25."
 else
-  msgAlvo="Dias até o casamento: $deltaDias"
+  msgAlvo="Dias até o casamento: $deltaDias dias ou $((deltaDias/7)) semanas"
 fi
 
 # --- Cálculo de trimestre ---
