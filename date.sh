@@ -114,17 +114,16 @@ echo "Hoje é $nomeDia, dia $dataBR, semana do ano $semanaNum, dia do ano $diaAn
 
 ####################  Tabela ####################
 # Larguras fixas para não perder o alinhamento
-c1=15   # Período
-c2=17   # Dias percorridos
-c2=17   # Dias percorridos
-c3=12   # % percorrida
+c1=13   # Período
+c2=3    # Dia
+c3=6   # %
 c4=19   # Falta para acabar
 
 # Cabeçalho
 printf "\n| %-*s | %-*s | %-*s | %-*s |\n" \
        $c1 "Periodo"  \
-       $c2 "Dias percorridos" \
-       $c3 "% percorrida" \
+       $c2 "Dia" \
+       $c3 "% " \
        $c4 "Falta para acabar"
 
 # Linha de separação automática (troca espaços por ─)
