@@ -110,7 +110,7 @@ pctTri=$(awk \
   }")
 
 ####################  Informações do dia ####################
-echo "Hoje é $nomeDia, dia $dataBR, semana do ano $semanaNum, dia do ano $diaAno"
+echo "Hoje é $nomeDia, dia $dataBR, semana do ano $semanaNum"
 
 ####################  Tabela ####################
 # Larguras fixas para não perder o alinhamento
