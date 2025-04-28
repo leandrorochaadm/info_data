@@ -21,7 +21,6 @@ mes="${input:2:2}"
 dia="${input:4:2}"
 dataISO="$ano-$mes-$dia"            # YYYY-MM-DD
 dataBR="${dia}/${mes}/${ano:2:2}"   # DD/MM/YY
-alvo="2025-07-18"
 
 # --- Função para timestamp (BSD date no macOS) ---
 get_ts(){
@@ -69,15 +68,26 @@ pctMesInt=$(( diaMes * 100 / ultMes ))
 totAno=$(date -j -f "%Y-%m-%d" "$ano-12-31" +%j)
 pctAnoFmt=$(awk "BEGIN{ printf \"%.2f\", $diaAno/$totAno*100 }")
 
-# --- Dias até 18/07/2025 ---
-tsData=$(get_ts "$dataISO")
-tsAlvo=$(get_ts "$alvo")
-deltaDias=$(( (tsAlvo - tsData) / 86400 ))
-if [ "$deltaDias" -lt 0 ]; then
-  msgAlvo="Já passou de 18/07/25."
-else
-  msgAlvo="Dias até o casamento: $deltaDias dias ou $((deltaDias/7)) semanas"
-fi
+dias_ate_data() {
+  local titulo="$1"     # Primeiro parâmetro: título da mensagem
+  local dataAtual="$2"  # Segundo parâmetro: data atual (YYYY-MM-DD)
+  local dataAlvo="$3"   # Terceiro parâmetro: data alvo (YYYY-MM-DD)
+
+  # Converte datas para timestamp
+  local tsData=$(date -j -f "%Y-%m-%d" "$dataAtual" "+%s")
+  local tsAlvo=$(date -j -f "%Y-%m-%d" "$dataAlvo" "+%s")
+
+  # Calcula diferença em dias
+  local deltaDias=$(( (tsAlvo - tsData) / 86400 ))
+
+  # Gera a mensagem
+  if [ "$deltaDias" -lt 0 ]; then
+    echo "Já passou de $dataAlvo."
+  else
+    local semanas=$(( deltaDias / 7 ))
+    echo "$titulo $deltaDias dias ou $semanas semanas."
+  fi
+}
 
 # --- Cálculo de trimestre ---
 tri=$(( (10#$mes - 1) / 3 + 1 ))
@@ -94,6 +104,7 @@ esac
 
 dataFimTri="$ano-$(printf "%02d" $mesFim)-$(printf "%02d" $ldTri)"
 tsFimTri=$(get_ts "$dataFimTri")
+tsData=$(get_ts "$dataISO")
 diasTri=$(( (tsFimTri - tsData) / 86400 ))
 
 # --- Percentual do trimestre percorrido (1 casa decimal truncada) ---
@@ -109,8 +120,14 @@ pctTri=$(awk \
      printf(\"%.1f\", t)
   }")
 
+
 ####################  Informações do dia ####################
 echo "Hoje é $nomeDia, dia $dataBR, semana do ano $semanaNum"
+
+################## informações dos prazos ###################
+
+dias_ate_data "Casamento falta:" "$dataISO" "2025-07-18"
+dias_ate_data "Nascimento falta:" "$dataISO" "2025-12-23"
 
 ####################  Tabela ####################
 # Larguras fixas para não perder o alinhamento
@@ -162,4 +179,3 @@ printf "| %-*s | %-*s | %-*s | %-*s |\n" \
 echo    # linha em branco no fim
 ##################################################
 
-echo "$msgAlvo"
