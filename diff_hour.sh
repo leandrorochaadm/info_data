@@ -24,11 +24,9 @@ if [ "$#" -eq 1 ] && [ "$1" = "t" ]; then
 fi
 
 # --- Nova lógica: perguntar horários ao usuário ---
-echo "Digite o primeiro horário (formato HH:MM):"
-read inicio
+read -p "Digite o primeiro horário (formato HH:MM): " inicio
+read -p "Digite o segundo horário (formato HH:MM): " fim
 
-echo "Digite o segundo horário (formato HH:MM):"
-read fim
 
 # Converter horários para minutos
 minInicio=$(to_minutes "$inicio")
