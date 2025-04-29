@@ -84,9 +84,40 @@ echo "porc_tarefas_p2 $porc_tarefas_p2"
 echo "porc_tarefas_p3 $porc_tarefas_p3"
 echo "porc_tarefas_p4 $porc_tarefas_p4"
 
-porc_tarefas_produtividade=$(awk "BEGIN {print ($porc_tarefas_p1 + $porc_tarefas_p2 + $porc_tarefas_p3 + $porc_tarefas_p4)}")
+# Soma apenas os porc_tarefas maiores que 0
+soma=0
+peso=0
 
+if (( $(awk "BEGIN {print ($tarefas_registradas_p1 > 0)}") )); then
+  soma=$(awk "BEGIN {print $soma + $porc_tarefas_p1}")
+  peso=$((peso + 4))
+fi
+
+if (( $(awk "BEGIN {print ($tarefas_registradas_p2 > 0)}") )); then
+  soma=$(awk "BEGIN {print $soma + $porc_tarefas_p2}")
+  peso=$((peso + 3))
+fi
+
+if (( $(awk "BEGIN {print ($tarefas_registradas_p3 > 0)}") )); then
+  soma=$(awk "BEGIN {print $soma + $porc_tarefas_p3}")
+  peso=$((peso + 2))
+fi
+
+if (( $(awk "BEGIN {print ($tarefas_registradas_p4 > 0)}") )); then
+  soma=$(awk "BEGIN {print $soma + $porc_tarefas_p4}")
+  peso=$((peso + 1))
+fi
+
+if (( peso > 0 )); then
+  porc_tarefas_produtividade=$(awk "BEGIN {print ($soma / $peso)}")
+else
+  porc_tarefas_produtividade=0
+fi
+
+echo "soma $soma"
+echo "soma $peso"
 echo "porc_tarefas_produtividade $porc_tarefas_produtividade"
+
 ####################################################################################################################
 # 4) Horas de estudo
 read -p "Quantas horas você estudou hoje? (ideal ≥4) (formato HH:mm) " estudo
