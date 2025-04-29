@@ -1,9 +1,5 @@
 #!/bin/bash
-# Script para chamar productivity.sh e/ou date.sh, de acordo com os parâmetros passados.
-# Exemplo de uso:
-#   ./meu_script.sh p         → executa somente productivity.sh
-#   ./meu_script.sh 250414    → executa somente date.sh com o parâmetro 250414
-#   ./meu_script.sh p 250414  → executa productivity.sh e depois date.sh 250414
+# Script para chamar productivity.sh, date.sh ou diff_hour.sh, de acordo com os parâmetros.
 
 # Função para verificar se um parâmetro é um número inteiro
 is_integer() {
@@ -12,41 +8,50 @@ is_integer() {
 
 # Verifica se ao menos um parâmetro foi passado
 if [ "$#" -eq 0 ]; then
-  echo "Uso: $0 [p] [numero_inteiro]"
+  echo "Uso: $0 [p] [número ou h ou d]"
   exit 1
 fi
 
-# Variável para armazenar o eventual parâmetro numérico
-param_num=""
+# Variável para armazenar o eventual parâmetro
+param="$1"
 
 # Se o primeiro parâmetro for "p", executa o script productivity.sh
-if [ "$1" = "p" ]; then
+if [ "$param" = "p" ]; then
   if [ -x "./productivity.sh" ]; then
     ./productivity.sh
   else
     echo "Script 'productivity.sh' não encontrado ou sem permissão de execução."
   fi
 
-  # Se houver segundo parâmetro, é considerado o número para date.sh
+  # Se houver segundo parâmetro, processa
   if [ -n "$2" ]; then
-    param_num="$2"
+    param="$2"
+  else
+    exit 0
   fi
-else
-  # Se o primeiro parâmetro não for "p", ele é considerado para o date.sh
-  param_num="$1"
 fi
 
-# Se houver um parâmetro numérico informado, verifica se ele é inteiro e chama date.sh
-if [ -n "$param_num" ]; then
-  if is_integer "$param_num" || [ "$param_num" = "h" ]; then
-    if [ -x "./date.sh" ]; then
-      ./date.sh "$param_num"
-    else
-      echo "Script 'date.sh' não encontrado ou sem permissão de execução."
-      exit 1
-    fi
+# Se o parâmetro for "d", chama diff_hour.sh
+if [ "$param" = "d" ]; then
+  if [ -x "./diff_hour.sh" ]; then
+    ./diff_hour.sh
   else
-    echo "O parâmetro '$param_num' não é um número inteiro válido nem a letra 'h'."
+    echo "Script 'diff_hour.sh' não encontrado ou sem permissão de execução."
     exit 1
   fi
+  exit 0
+fi
+
+# Se o parâmetro for número ou "h", chama date.sh
+if is_integer "$param" || [ "$param" = "h" ]; then
+  if [ -x "./date.sh" ]; then
+    ./date.sh "$param"
+  else
+    echo "Script 'date.sh' não encontrado ou sem permissão de execução."
+    exit 1
+  fi
+else
+  echo "Parâmetro inválido: '$param'"
+  echo "Uso permitido: p, número (YYMMDD), h ou d"
+  exit 1
 fi
