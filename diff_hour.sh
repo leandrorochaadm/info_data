@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Arquivo onde será salvo o total de minutos
-ARQUIVO="tempo_total.txt"
+ARQUIVO="time_accumulated.txt"
 
 # Função para converter HH:MM para minutos totais
 to_minutes() {
@@ -11,8 +11,24 @@ to_minutes() {
 }
 
 # Verificação de argumentos
+if [ "$#" -eq 1 ] && [ "$1" = "t" ]; then
+  # Mostrar o tempo acumulado
+  if [ -f "$ARQUIVO" ]; then
+    totalAnterior=$(<"$ARQUIVO")
+    horasTotal=$((totalAnterior / 60))
+    minutosTotal=$((totalAnterior % 60))
+    echo "Tempo acumulado: $horasTotal horas e $minutosTotal minutos."
+  else
+    echo "Nenhum tempo acumulado encontrado."
+  fi
+  exit 0
+fi
+
+# Verificação normal de dois horários
 if [ "$#" -ne 2 ]; then
-  echo "Uso: $0 horário_inicial horário_final (ex: ./calc_tempo.sh 12:00 12:47)"
+  echo "Uso:"
+  echo "  $0 horário_inicial horário_final (ex: ./calc_tempo.sh 12:00 12:47)"
+  echo "  $0 t                         (para ver o tempo acumulado)"
   exit 1
 fi
 
