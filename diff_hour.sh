@@ -10,9 +10,8 @@ to_minutes() {
   echo $((10#$hora * 60 + 10#$minuto))
 }
 
-# Verificação de argumentos
+# Se quiser apenas ver o acumulado
 if [ "$#" -eq 1 ] && [ "$1" = "t" ]; then
-  # Mostrar o tempo acumulado
   if [ -f "$ARQUIVO" ]; then
     totalAnterior=$(<"$ARQUIVO")
     horasTotal=$((totalAnterior / 60))
@@ -24,16 +23,12 @@ if [ "$#" -eq 1 ] && [ "$1" = "t" ]; then
   exit 0
 fi
 
-# Verificação normal de dois horários
-if [ "$#" -ne 2 ]; then
-  echo "Uso:"
-  echo "  $0 horário_inicial horário_final (ex: ./calc_tempo.sh 12:00 12:47)"
-  echo "  $0 t                         (para ver o tempo acumulado)"
-  exit 1
-fi
+# --- Nova lógica: perguntar horários ao usuário ---
+echo "Digite o primeiro horário (formato HH:MM):"
+read inicio
 
-inicio="$1"
-fim="$2"
+echo "Digite o segundo horário (formato HH:MM):"
+read fim
 
 # Converter horários para minutos
 minInicio=$(to_minutes "$inicio")
@@ -51,21 +46,27 @@ minutos=$((difMin % 60))
 
 echo "Diferença calculada: $horas horas e $minutos minutos."
 
-# Lê o valor anterior do arquivo (se existir), senão considera 0
-if [ -f "$ARQUIVO" ]; then
-  totalAnterior=$(<"$ARQUIVO")
+# Pergunta se quer salvar o resultado
+echo "Deseja salvar esse resultado no total acumulado? (s/n)"
+read resposta
+
+if [ "$resposta" = "s" ] || [ "$resposta" = "S" ]; then
+  if [ -f "$ARQUIVO" ]; then
+    totalAnterior=$(<"$ARQUIVO")
+  else
+    totalAnterior=0
+  fi
+
+  totalAtualizado=$((totalAnterior + difMin))
+
+  # Salva o novo total
+  echo "$totalAtualizado" > "$ARQUIVO"
+
+  # Mostra o novo acumulado
+  horasTotal=$((totalAtualizado / 60))
+  minutosTotal=$((totalAtualizado % 60))
+
+  echo "Novo tempo acumulado: $horasTotal horas e $minutosTotal minutos."
 else
-  totalAnterior=0
+  echo "Resultado não foi salvo no acumulado."
 fi
-
-# Soma o tempo atual com o anterior
-totalAtualizado=$((totalAnterior + difMin))
-
-# Salva o novo total no arquivo
-echo "$totalAtualizado" > "$ARQUIVO"
-
-# Mostra o acumulado
-horasTotal=$((totalAtualizado / 60))
-minutosTotal=$((totalAtualizado % 60))
-
-echo "Tempo acumulado: $horasTotal horas e $minutosTotal minutos."
