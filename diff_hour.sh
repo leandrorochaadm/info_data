@@ -1,11 +1,12 @@
 #!/bin/bash
 
-# Script para calcular diferença de tempo em horas e minutos
+# Arquivo onde será salvo o total de minutos
+ARQUIVO="tempo_total.txt"
 
-# Função para converter HH:MM em minutos totais
+# Função para converter HH:MM para minutos totais
 to_minutes() {
-  local hora=${1%:*}  # pega tudo antes dos dois pontos
-  local minuto=${1#*:}  # pega tudo depois dos dois pontos
+  local hora=${1%:*}
+  local minuto=${1#*:}
   echo $((10#$hora * 60 + 10#$minuto))
 }
 
@@ -32,5 +33,23 @@ difMin=$((minFim - minInicio))
 horas=$((difMin / 60))
 minutos=$((difMin % 60))
 
-# Exibir o resultado
-echo "Diferença: $horas horas e $minutos minutos."
+echo "Diferença calculada: $horas horas e $minutos minutos."
+
+# Lê o valor anterior do arquivo (se existir), senão considera 0
+if [ -f "$ARQUIVO" ]; then
+  totalAnterior=$(<"$ARQUIVO")
+else
+  totalAnterior=0
+fi
+
+# Soma o tempo atual com o anterior
+totalAtualizado=$((totalAnterior + difMin))
+
+# Salva o novo total no arquivo
+echo "$totalAtualizado" > "$ARQUIVO"
+
+# Mostra o acumulado
+horasTotal=$((totalAtualizado / 60))
+minutosTotal=$((totalAtualizado % 60))
+
+echo "Tempo acumulado: $horasTotal horas e $minutosTotal minutos."
