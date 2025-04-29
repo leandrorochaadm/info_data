@@ -74,13 +74,24 @@ read -p "Quantos ml de água foram consumidos hoje? (ideal 3000) " agua
 agua=${agua:-0}
 porc_agua=$(awk "BEGIN {print ($agua/3000)*100}")
 
+# 7) Horas de sono
+read -p "Quantas horas você dormiu hoje? (ideal 9 horas) (formato HH:mm) " sono
+sono=${sono:-0}
+horas_sono=$(to_decimal_hours "$sono")
+
+# Calcula diferença absoluta
+dif_sono=$(awk "BEGIN { diff = $horas_sono - 9; if (diff < 0) diff = -diff; print diff }")
+
+# Calcula a porcentagem: (9 - dif_sono) * 100 / 9
+porc_sono=$(awk "BEGIN {print (9 - $dif_sono) * 100 / 9}")
+
 #######################################
 # Média final (arredondada)
 #######################################
 media=$(awk -v p1="$porc_horas" -v p2="$habitos_realizados" \
                  -v p3="$porc_tarefas" -v p4="$porc_estudo" \
-                 -v p5="$porc_celular" -v p6="$porc_agua" \
-            'BEGIN {printf "%.0f", (p1+p2+p3+p4+p5+p6)/6}')
+                 -v p5="$porc_celular" -v p6="$porc_agua" -v p7="$porc_sono" \
+            'BEGIN {printf "%.0f", (p1+p2+p3+p4+p5+p6+p7)/7}')
 
 #######################################
 # Resumo e resultado
@@ -92,5 +103,6 @@ printf "• Produtividade nas tarefas:  %.0f%%\n" "$porc_tarefas"
 printf "• Horas de estudo:            %.0f%%\n" "$porc_estudo"
 printf "• Meta de uso do celular:     %.0f%%\n" "$porc_celular"
 printf "• Água consumida:             %.0f%%\n" "$porc_agua"
+printf "• Qualidade do sono:          %.0f%%\n" "$porc_sono"
 
 echo -e "\nA produtividade média de hoje foi ${media}%"
