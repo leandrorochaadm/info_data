@@ -79,11 +79,6 @@ porc_tarefas_p2=$(awk "BEGIN {print ($tarefas_registradas_p2>0)?(($tarefas_concl
 porc_tarefas_p3=$(awk "BEGIN {print ($tarefas_registradas_p3>0)?(($tarefas_concluidas_p3*200)/$tarefas_registradas_p3) : 0}")
 porc_tarefas_p4=$(awk "BEGIN {print ($tarefas_registradas_p4>0)?(($tarefas_concluidas_p4*100)/$tarefas_registradas_p4) : 0}")
 
-echo "porc_tarefas_p1 $porc_tarefas_p1"
-echo "porc_tarefas_p2 $porc_tarefas_p2"
-echo "porc_tarefas_p3 $porc_tarefas_p3"
-echo "porc_tarefas_p4 $porc_tarefas_p4"
-
 # Soma apenas os porc_tarefas maiores que 0
 soma=0
 peso=0
@@ -113,10 +108,6 @@ if (( peso > 0 )); then
 else
   porc_tarefas_produtividade=0
 fi
-
-echo "soma $soma"
-echo "soma $peso"
-echo "porc_tarefas_produtividade $porc_tarefas_produtividade"
 
 ####################################################################################################################
 # 4) Horas de estudo
