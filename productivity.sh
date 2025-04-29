@@ -35,33 +35,66 @@ to_decimal_hours() {
 # Perguntas ao usuário (Enter = 0)
 #######################################
 
+####################################################################################################################
 # 1) Horas trabalhadas
 read -p "Quanto horas eu trabalhei hoje? (ideal ≥8) (formato HH:mm) " trabalho
 trabalho=${trabalho:-0}
 horas_trabalhadas=$(to_decimal_hours "$trabalho")
 porc_horas=$(awk "BEGIN {print ($horas_trabalhadas/8)*100}")
 
+####################################################################################################################
 # 2) Porcentagem dos hábitos
 read -p "Quantos porcento dos hábitos você realizou hoje? (ideal 100) " habitos_realizados
 habitos_realizados=${habitos_realizados:-0}
 
-# 3) Tarefas
-read -p "Quantas tarefas foram registradas hoje? " tarefas_registradas
-tarefas_registradas=${tarefas_registradas:-0}
-read -p "Quantas tarefas foram concluídas? " tarefas_concluidas
-tarefas_concluidas=${tarefas_concluidas:-0}
-if (( tarefas_registradas > 0 )); then
-  porc_tarefas=$(awk "BEGIN {print ($tarefas_concluidas/$tarefas_registradas)*100}")
-else
-  porc_tarefas=0
-fi
+####################################################################################################################
+# 3) Tarefas (ponderado por prioridade e quantidade)
+echo -e "\nVamos calcular as tarefas por prioridade:"
 
+echo -e "\nPrioridade 1:"
+read -p "registradas? " tarefas_registradas_p1
+read -p "concluídas? " tarefas_concluidas_p1
+
+echo -e "\nPrioridade 2:"
+read -p "registradas? " tarefas_registradas_p2
+read -p "concluídas? " tarefas_concluidas_p2
+
+echo -e "\nPrioridade 3:"
+read -p "registradas? " tarefas_registradas_p3
+read -p "concluídas? " tarefas_concluidas_p3
+
+echo -e "\nPrioridade 4:"
+read -p "registradas? " tarefas_registradas_p4
+read -p "concluídas? " tarefas_concluidas_p4
+
+# Garantir que todos são números
+for var in tarefas_registradas_p1 tarefas_registradas_p2 tarefas_registradas_p3 tarefas_registradas_p4 \
+           tarefas_concluidas_p1 tarefas_concluidas_p2 tarefas_concluidas_p3 tarefas_concluidas_p4; do
+  eval "$var=\${$var:-0}"
+done
+
+# Calcula percentual por prioridade com proteção contra divisão por zero
+porc_tarefas_p1=$(awk "BEGIN {print ($tarefas_registradas_p1>0)?(($tarefas_concluidas_p1*400)/$tarefas_registradas_p1) : 0}")
+porc_tarefas_p2=$(awk "BEGIN {print ($tarefas_registradas_p2>0)?(($tarefas_concluidas_p2*300)/$tarefas_registradas_p2) : 0}")
+porc_tarefas_p3=$(awk "BEGIN {print ($tarefas_registradas_p3>0)?(($tarefas_concluidas_p3*200)/$tarefas_registradas_p3) : 0}")
+porc_tarefas_p4=$(awk "BEGIN {print ($tarefas_registradas_p4>0)?(($tarefas_concluidas_p4*100)/$tarefas_registradas_p4) : 0}")
+
+echo "porc_tarefas_p1 $porc_tarefas_p1"
+echo "porc_tarefas_p2 $porc_tarefas_p2"
+echo "porc_tarefas_p3 $porc_tarefas_p3"
+echo "porc_tarefas_p4 $porc_tarefas_p4"
+
+porc_tarefas_produtividade=$(awk "BEGIN {print ($porc_tarefas_p1 + $porc_tarefas_p2 + $porc_tarefas_p3 + $porc_tarefas_p4)}")
+
+echo "porc_tarefas_produtividade $porc_tarefas_produtividade"
+####################################################################################################################
 # 4) Horas de estudo
 read -p "Quantas horas você estudou hoje? (ideal ≥4) (formato HH:mm) " estudo
 estudo=${estudo:-0}
 horas_estudadas=$(to_decimal_hours "$estudo")
 porc_estudo=$(awk "BEGIN {print ($horas_estudadas/4)*100}")
 
+####################################################################################################################
 # 5) Uso de celular
 read -p "Quantas horas inúteis você ficou no celular hoje? (ideal ≤4) (formato HH:mm) " celular
 celular=${celular:-0}
@@ -69,11 +102,13 @@ horas_celular=$(to_decimal_hours "$celular")
 porc_celular=$(awk "BEGIN {print (1 - ($horas_celular/4)) * 100}")
 if (( $(awk "BEGIN {print ($porc_celular < 0)}") )); then porc_celular=0; fi
 
+####################################################################################################################
 # 6) Água
 read -p "Quantos ml de água foram consumidos hoje? (ideal 3000) " agua
 agua=${agua:-0}
 porc_agua=$(awk "BEGIN {print ($agua/3000)*100}")
 
+####################################################################################################################
 # 7) Horas de sono
 read -p "Quantas horas você dormiu hoje? (ideal 9 horas) (formato HH:mm) " sono
 sono=${sono:-0}
@@ -89,7 +124,7 @@ porc_sono=$(awk "BEGIN {print (9 - $dif_sono) * 100 / 9}")
 # Média final (arredondada)
 #######################################
 media=$(awk -v p1="$porc_horas" -v p2="$habitos_realizados" \
-                 -v p3="$porc_tarefas" -v p4="$porc_estudo" \
+                 -v p3="$porc_tarefas_produtividade" -v p4="$porc_estudo" \
                  -v p5="$porc_celular" -v p6="$porc_agua" -v p7="$porc_sono" \
             'BEGIN {printf "%.0f", (p1+p2+p3+p4+p5+p6+p7)/7}')
 
@@ -99,7 +134,7 @@ media=$(awk -v p1="$porc_horas" -v p2="$habitos_realizados" \
 echo -e "\nResumo do dia:"
 printf "• Horas trabalhadas:          %.0f%%\n" "$porc_horas"
 printf "• Hábitos realizados:         %.0f%%\n" "$habitos_realizados"
-printf "• Produtividade nas tarefas:  %.0f%%\n" "$porc_tarefas"
+printf "• Produtividade nas tarefas:  %.0f%%\n" "$porc_tarefas_produtividade"
 printf "• Horas de estudo:            %.0f%%\n" "$porc_estudo"
 printf "• Meta de uso do celular:     %.0f%%\n" "$porc_celular"
 printf "• Água consumida:             %.0f%%\n" "$porc_agua"
