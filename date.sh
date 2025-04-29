@@ -11,14 +11,22 @@ export LANG=C
 
 # --- Validação de entrada ---
 if [ "$#" -ne 1 ]; then
-  echo "Uso: $0 data no formato YYMMDD (ex: 250417)"
+  echo "Uso: $0 data no formato YYMMDD (ex: 250417) ou 'h' para hoje"
   exit 1
 fi
 
 input="$1"
-ano="20${input:0:2}"
-mes="${input:2:2}"
-dia="${input:4:2}"
+
+if [ "$input" = "h" ]; then
+  ano=$(date "+%Y")
+  mes=$(date "+%m")
+  dia=$(date "+%d")
+else
+  ano="20${input:0:2}"
+  mes="${input:2:2}"
+  dia="${input:4:2}"
+fi
+
 dataISO="$ano-$mes-$dia"            # YYYY-MM-DD
 dataBR="${dia}/${mes}/${ano:2:2}"   # DD/MM/YY
 

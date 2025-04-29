@@ -38,7 +38,7 @@ fi
 
 # Se houver um parâmetro numérico informado, verifica se ele é inteiro e chama date.sh
 if [ -n "$param_num" ]; then
-  if is_integer "$param_num"; then
+  if is_integer "$param_num" || [ "$param_num" = "h" ]; then
     if [ -x "./date.sh" ]; then
       ./date.sh "$param_num"
     else
@@ -46,7 +46,7 @@ if [ -n "$param_num" ]; then
       exit 1
     fi
   else
-    echo "O parâmetro '$param_num' não é um número inteiro válido."
+    echo "O parâmetro '$param_num' não é um número inteiro válido nem a letra 'h'."
     exit 1
   fi
 fi
