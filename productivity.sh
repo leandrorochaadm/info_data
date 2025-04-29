@@ -135,9 +135,9 @@ if (( $(awk "BEGIN {print ($porc_celular < 0)}") )); then porc_celular=0; fi
 
 ####################################################################################################################
 # 6) Água
-read -p "Quantos ml de água foram consumidos hoje? (ideal 3000) " agua
+read -p "Quantos litros de água foram consumidas hoje? (ideal > 3 litos) " agua
 agua=${agua:-0}
-porc_agua=$(awk "BEGIN {print ($agua/3000)*100}")
+porc_agua=$(awk "BEGIN {print ($agua/3)*100}")
 
 ####################################################################################################################
 # 7) Horas de sono
