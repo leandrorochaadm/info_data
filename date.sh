@@ -128,14 +128,16 @@ pctTri=$(awk \
      printf(\"%.1f\", t)
   }")
 
-
 ####################  Informações do dia ####################
-echo "Hoje é $nomeDia, dia $dataBR, semana do ano $semanaNum"
+printf "\nHoje é $nomeDia, dia $dataBR, semana do ano $semanaNum\n\n"
+
 
 ################## informações dos prazos ###################
+dias_ate_data "Casamento: Faltam" "$dataISO" "2025-07-18"
+dias_ate_data "Gestação: Já passaram" "2025-03-18" "$dataISO"
+dias_ate_data "Nascimento: faltam" "$dataISO" "2025-12-23"
 
-dias_ate_data "Casamento falta:" "$dataISO" "2025-07-18"
-dias_ate_data "Nascimento falta:" "$dataISO" "2025-12-23"
+
 
 ####################  Tabela ####################
 # Larguras fixas para não perder o alinhamento
