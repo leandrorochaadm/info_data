@@ -76,25 +76,42 @@ pctMesInt=$(( diaMes * 100 / ultMes ))
 totAno=$(date -j -f "%Y-%m-%d" "$ano-12-31" +%j)
 pctAnoFmt=$(awk "BEGIN{ printf \"%.2f\", $diaAno/$totAno*100 }")
 
-dias_ate_data() {
-  local titulo="$1"     # Primeiro parâmetro: título da mensagem
-  local dataAtual="$2"  # Segundo parâmetro: data atual (YYYY-MM-DD)
-  local dataAlvo="$3"   # Terceiro parâmetro: data alvo (YYYY-MM-DD)
+percentual_ja_passou() {
+  local titulo="$1"
+  local dataAtual="$2"
+  local dataAlvo="$3"
+  local dataInicio="$4"
 
-  # Converte datas para timestamp
-  local tsData=$(date -j -f "%Y-%m-%d" "$dataAtual" "+%s")
+  local tsInicio=$(date -j -f "%Y-%m-%d" "$dataInicio" "+%s")
   local tsAlvo=$(date -j -f "%Y-%m-%d" "$dataAlvo" "+%s")
+  local tsAtual=$(date -j -f "%Y-%m-%d" "$dataAtual" "+%s")
 
-  # Calcula diferença em dias
-  local deltaDias=$(( (tsAlvo - tsData) / 86400 ))
+  local diasTotais=$(( (tsAlvo - tsInicio) / 86400 ))
+  local diasPassados=$(( (tsAtual - tsInicio) / 86400 ))
 
-  # Gera a mensagem
-  if [ "$deltaDias" -lt 0 ]; then
-    echo "Já passou de $dataAlvo."
-  else
-    local semanas=$(( deltaDias / 7 ))
-    echo "$titulo $deltaDias dias ou $semanas semanas."
-  fi
+  if [ "$diasPassados" -lt 0 ]; then diasPassados=0; fi
+
+  local percentual=$(echo "scale=1; (100 * $diasPassados) / $diasTotais" | bc)
+  echo "$titulo Já passaram $diasPassados dias ou $((diasPassados / 7)) semanas. Passou: ${percentual}%."
+}
+
+percentual_faltando() {
+  local titulo="$1"
+  local dataAtual="$2"
+  local dataAlvo="$3"
+  local dataInicio="$4"
+
+  local tsInicio=$(date -j -f "%Y-%m-%d" "$dataInicio" "+%s")
+  local tsAlvo=$(date -j -f "%Y-%m-%d" "$dataAlvo" "+%s")
+  local tsAtual=$(date -j -f "%Y-%m-%d" "$dataAtual" "+%s")
+
+  local diasTotais=$(( (tsAlvo - tsInicio) / 86400 ))
+  local diasRestantes=$(( (tsAlvo - tsAtual) / 86400 ))
+
+  if [ "$diasRestantes" -lt 0 ]; then diasRestantes=0; fi
+
+  local percentual=$(echo "scale=1; (100 * $diasRestantes) / $diasTotais" | bc)
+  echo "$titulo Faltam $diasRestantes dias ou $((diasRestantes / 7)) semanas. Restante: ${percentual}%."
 }
 
 # --- Cálculo de trimestre ---
@@ -133,9 +150,9 @@ printf "\nHoje é $nomeDia, dia $dataBR, semana do ano $semanaNum\n\n"
 
 
 ################## informações dos prazos ###################
-dias_ate_data "Casamento: Faltam" "$dataISO" "2025-07-18"
-dias_ate_data "Gestação: Já passaram" "2025-03-18" "$dataISO"
-dias_ate_data "Nascimento: faltam" "$dataISO" "2025-12-23"
+percentual_faltando "Casamento:" "$dataISO" "2025-07-18" "2025-03-01"
+percentual_ja_passou "Gestação:" "$dataISO" "2025-12-23" "2025-03-18"
+percentual_faltando "Nascimento:" "$dataISO" "2025-12-23" "2025-03-18"
 
 
 
