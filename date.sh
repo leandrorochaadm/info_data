@@ -44,7 +44,7 @@ diaAno=$(date -j -f "%Y-%m-%d" "$dataISO" +%j)
 semanaNum=$(date -j -f "%Y-%m-%d" "$dataISO" +%V)
 
 # Converte dia do mês em inteiro (remove zero à esquerda)
-diaMes=$((10#$dia))
+diaMes=$(printf "%d" "$dia")
 
 # --- Tradução do dia da semana ---
 case "$nomeDia" in
