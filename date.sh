@@ -151,6 +151,7 @@ printf "\nHoje é $nomeDia, dia $dataBR, semana do ano $semanaNum\n\n"
 
 ################## informações dos prazos ###################
 percentual_faltando "Casamento:" "$dataISO" "2025-07-18" "2025-03-01"
+percentual_faltando "Formação da placenta:" "$dataISO" "2025-06-17" "2025-03-18"
 percentual_ja_passou "Gestação:" "$dataISO" "2025-12-23" "2025-03-18"
 percentual_faltando "Nascimento:" "$dataISO" "2025-12-23" "2025-03-18"
 
