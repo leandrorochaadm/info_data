@@ -14,7 +14,7 @@ ARQUIVO_IMAGEM="./results/resultado.jpg"
 bash date.sh "$DATA" > "$ARQUIVO_TEXTO"
 
 # Gera imagem com fundo preto e texto branco
-convert -background black -fill white -font PT-Mono -pointsize 18 label:@"$ARQUIVO_TEXTO" "$ARQUIVO_IMAGEM"
+convert -background black -fill white -font PT-Mono-Bold -pointsize 18 label:@"$ARQUIVO_TEXTO" "$ARQUIVO_IMAGEM"
 
 # Mostra mensagem final
 echo "Imagem gerada: $ARQUIVO_IMAGEM"
