@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#Alarme pomodoro 40/20
-
 # Pega o caminho completo do script
 SCRIPT_PATH="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
 
@@ -12,18 +10,27 @@ if [[ "$RUNNING_IN_BG" != "1" ]]; then
     exit 0
 fi
 
+# Função para exibir notificação
+enviar_notificacao() {
+    local titulo="$1"
+    local mensagem="$2"
+    terminal-notifier -title "$titulo" -message "$mensagem" -timeout 5
+}
+
 # Lógica principal
 if [ "$1" == "p" ]; then
-    echo "Modo pausa: esperando 20 minutos..."
-    sleep $((20*60))
+    echo "Modo P: esperando 20 minutos..."
+    sleep $((2))
     afplay /System/Library/Sounds/Ping.aiff
+    enviar_notificacao "Alarme P" "Seu cronômetro de 20 minutos terminou!"
 elif [ "$1" == "g" ]; then
-    echo "Modo trabalho: esperando 40 minutos..."
-    sleep $((40*60))
+    echo "Modo G: esperando 40 minutos..."
+    sleep $((4))
     afplay /System/Library/Sounds/Glass.aiff
+    enviar_notificacao "Alarme G" "Seu cronômetro de 40 minutos terminou!"
 else
     echo "Uso: $0 [p|g]"
-    echo "  p = espera 20 minutos e toca som Ping"
-    echo "  g = espera 40 minutos e toca som Glass"
+    echo "  p = espera 20 minutos e toca som + notificação"
+    echo "  g = espera 40 minutos e toca som + notificação"
     exit 1
 fi
