@@ -14,18 +14,20 @@ fi
 enviar_notificacao() {
     local titulo="$1"
     local mensagem="$2"
-    terminal-notifier -title "$titulo" -message "$mensagem" -timeout 5
+    osascript -e "display notification \"$mensagem\" with title \"$titulo\""
+    osascript -e "display dialog \"$mensagem\" with title \"$titulo\" buttons {\"OK\"} with icon note"
 }
+
 
 # Lógica principal
 if [ "$1" == "p" ]; then
     echo "Modo P: esperando 20 minutos..."
-    sleep $((2))
+    sleep $((20*60))
     afplay /System/Library/Sounds/Ping.aiff
     enviar_notificacao "Alarme P" "Seu cronômetro de 20 minutos terminou!"
 elif [ "$1" == "g" ]; then
     echo "Modo G: esperando 40 minutos..."
-    sleep $((4))
+    sleep $((40*60))
     afplay /System/Library/Sounds/Glass.aiff
     enviar_notificacao "Alarme G" "Seu cronômetro de 40 minutos terminou!"
 else
