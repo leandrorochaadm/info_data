@@ -18,3 +18,6 @@ convert -background black -fill white -font PT-Mono-Bold -pointsize 18 label:@"$
 
 # Mostra mensagem final
 echo "Imagem gerada: $ARQUIVO_IMAGEM"
+
+# Mostra no terminal o resultado
+bash date.sh "$DATA"
