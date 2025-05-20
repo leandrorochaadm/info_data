@@ -110,9 +110,9 @@ pctTri=$(awk \
 ####################  Informações do dia ####################
 printf "\nHoje é $nomeDia, dia $dataBR, semana do ano $semanaNum\n"
 
-printf "\n----------------------------------------------------------------\n"
+printf "\n------------------------------------------------------------------\n"
 printf "        Informações dos prazos de gravidez/casamento"
-printf "\n----------------------------------------------------------------"
+printf "\n------------------------------------------------------------------"
 
 ####################  Tabela Gravidez ####################
 # Larguras fixas para não perder o alinhamento
@@ -123,7 +123,7 @@ g4=10   # Percentual
 # Cabeçalho (removida a coluna Dias)
 printf "\n| %-*s | %-*s | %-*s |\n" \
        $g1 "Evento"  \
-       $g3 "Semanas" \
+       $g3 "Período" \
        $g4 "Percentual"
 
 percentual_ja_passou() {
