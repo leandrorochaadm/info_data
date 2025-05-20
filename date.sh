@@ -118,82 +118,83 @@ printf "\n----------------------------------------------------------------"
 # Larguras fixas para não perder o alinhamento
 g1=29   # Evento
 g2=5    # Dias
-g3=7    # Semanas
+g3=17    # Semanas
 g4=10   # Percentual
 
 # Cabeçalho
 printf "\n| %-*s | %-*s | %-*s | %-*s |\n" \
        $g1 "Evento"  \
        $g2 "Dias" \
-       $g3 "Semanas" \
+       $g3 "Periodo" \
        $g4 "Percentual"
 
-percentual_ja_passou() {
-  local titulo="$1"
-  local dataAtual="$2"
-  local dataAlvo="$3"
-  local dataInicio="$4"
+       percentual_ja_passou() {
+         local titulo="$1"
+         local dataAtual="$2"
+         local dataAlvo="$3"
+         local dataInicio="$4"
 
-  local tsInicio=$(date -j -f "%Y-%m-%d" "$dataInicio" "+%s")
-  local tsAlvo=$(date -j -f "%Y-%m-%d" "$dataAlvo" "+%s")
-  local tsAtual=$(date -j -f "%Y-%m-%d" "$dataAtual" "+%s")
+         local tsInicio=$(date -j -f "%Y-%m-%d" "$dataInicio" "+%s")
+         local tsAlvo=$(date -j -f "%Y-%m-%d" "$dataAlvo" "+%s")
+         local tsAtual=$(date -j -f "%Y-%m-%d" "$dataAtual" "+%s")
 
-  local diasTotais=$(( (tsAlvo - tsInicio) / 86400 ))
-  local diasPassados=$(( (tsAtual - tsInicio) / 86400 ))
+         local diasTotais=$(( (tsAlvo - tsInicio) / 86400 ))
+         local diasPassados=$(( (tsAtual - tsInicio) / 86400 ))
 
-  if [ "$diasPassados" -lt 0 ]; then diasPassados=0; fi
+         if [ "$diasPassados" -lt 0 ]; then diasPassados=0; fi
 
-  local percentual=$(echo "scale=1; (100 * $diasPassados) / $diasTotais" | bc)
-#  echo "$titulo Já passaram $diasPassados dias ou $((diasPassados / 7)) semanas. Passou: ${percentual}%."
+         local percentual=$(echo "scale=1; (100 * $diasPassados) / $diasTotais" | bc)
+         local semanas=$((diasPassados / 7))
+         local dias=$((diasPassados % 7))
+         local str_semanas_dias="${semanas} sem. e ${dias} dias"
 
-# Linha de separação automática (troca espaços por ─)
-printf "|-%-*s-|-%-*s-|-%-*s-|-%-*s-|\n" \
-       $g1 "" $g2 "" $g3 "" $g4 "" \
-  | tr ' ' '-'
+         printf "|-%-*s-|-%-*s-|-%-*s-|-%-*s-|\n" \
+              $g1 "" $g2 "" $g3 "" $g4 "" \
+         | tr ' ' '-'
 
-  printf "| %-*s | %-*s | %-*s | %-*s |\n" \
-       $g1 "$titulo" \
-       $g2 "$diasPassados" \
-       $g3 "$((diasPassados / 7))" \
-       $g4 "${percentual}%"
-}
+         printf "| %-*s | %-*s | %-*s | %-*s |\n" \
+              $g1 "$titulo" \
+              $g2 "$diasPassados" \
+              $g3 "$str_semanas_dias" \
+              $g4 "${percentual}%"
+       }
 
-percentual_faltando() {
-  local titulo="$1"
-  local dataAtual="$2"
-  local dataAlvo="$3"
-  local dataInicio="$4"
+       percentual_faltando() {
+         local titulo="$1"
+         local dataAtual="$2"
+         local dataAlvo="$3"
+         local dataInicio="$4"
 
-  local tsInicio=$(date -j -f "%Y-%m-%d" "$dataInicio" "+%s")
-  local tsAlvo=$(date -j -f "%Y-%m-%d" "$dataAlvo" "+%s")
-  local tsAtual=$(date -j -f "%Y-%m-%d" "$dataAtual" "+%s")
+         local tsInicio=$(date -j -f "%Y-%m-%d" "$dataInicio" "+%s")
+         local tsAlvo=$(date -j -f "%Y-%m-%d" "$dataAlvo" "+%s")
+         local tsAtual=$(date -j -f "%Y-%m-%d" "$dataAtual" "+%s")
 
-  local diasTotais=$(( (tsAlvo - tsInicio) / 86400 ))
-  local diasRestantes=$(( (tsAlvo - tsAtual) / 86400 ))
+         local diasTotais=$(( (tsAlvo - tsInicio) / 86400 ))
+         local diasRestantes=$(( (tsAlvo - tsAtual) / 86400 ))
 
-  if [ "$diasRestantes" -lt 0 ]; then diasRestantes=0; fi
+         if [ "$diasRestantes" -lt 0 ]; then diasRestantes=0; fi
 
-  local percentual=$(echo "scale=1; (100 * $diasRestantes) / $diasTotais" | bc)
-#  echo "$titulo Faltam $diasRestantes dias ou $((diasRestantes / 7)) semanas. Restante: ${percentual}%."
+         local percentual=$(echo "scale=1; (100 * $diasRestantes) / $diasTotais" | bc)
+         local semanas=$((diasRestantes / 7))
+         local dias=$((diasRestantes % 7))
+         local str_semanas_dias="${semanas} sem. e ${dias} dias"
 
-# Linha de separação automática (troca espaços por ─)
-printf "|-%-*s-|-%-*s-|-%-*s-|-%-*s-|\n" \
-       $g1 "" $g2 "" $g3 "" $g4 "" \
-  | tr ' ' '-'
+         printf "|-%-*s-|-%-*s-|-%-*s-|-%-*s-|\n" \
+              $g1 "" $g2 "" $g3 "" $g4 "" \
+         | tr ' ' '-'
 
-  printf "| %-*s | %-*s | %-*s | %-*s |\n" \
-       $g1 "$titulo" \
-       $g2 "$diasRestantes" \
-       $g3 "$((diasRestantes / 7))" \
-       $g4 "${percentual}%"
-}
-
+         printf "| %-*s | %-*s | %-*s | %-*s |\n" \
+              $g1 "$titulo" \
+              $g2 "$diasRestantes" \
+              $g3 "$str_semanas_dias" \
+              $g4 "${percentual}%"
+       }
 
 ################## informações dos prazos de gravidez ###################
-percentual_faltando "Casamento (tempo que falta)" "$dataISO" "2025-07-18" "2025-03-01"
-percentual_ja_passou "Gravidez (tempo que passou)  " "$dataISO" "2025-12-23" "2025-03-18"
-percentual_faltando "Placenta (tempo que falta)" "$dataISO" "2025-06-17" "2025-03-18"
-percentual_faltando "Nascimento (tempo que falta)" "$dataISO" "2025-12-23" "2025-03-18"
+percentual_faltando "Casamento (tempo que falta)" "$dataISO" "2025-07-11" "2025-03-01"
+percentual_ja_passou "Gravidez (tempo que passou)  " "$dataISO" "2025-12-25" "2025-03-18"
+percentual_faltando "Placenta (tempo que falta)" "$dataISO" "2025-06-10" "2025-03-18"
+percentual_faltando "Nascimento (tempo que falta)" "$dataISO" "2025-12-25" "2025-03-18"
 
 printf "\n-------------------------------------------------------\n"
 printf "    Informações do calendário tempo percorrido"
