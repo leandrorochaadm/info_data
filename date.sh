@@ -110,20 +110,22 @@ pctTri=$(awk \
 ####################  Informações do dia ####################
 printf "\nHoje é $nomeDia, dia $dataBR, semana do ano $semanaNum\n"
 
-printf "\n------------------------------------------------------------------\n"
-printf "        Informações dos prazos de gravidez/casamento"
-printf "\n------------------------------------------------------------------"
+printf "\n-------------------------------------------------------------------------\n"
+printf "             Informações dos prazos de gravidez/casamento"
+printf "\n-------------------------------------------------------------------------"
 
 ####################  Tabela Gravidez ####################
 # Larguras fixas para não perder o alinhamento
 g1=29   # Evento
-g3=17   # Semanas (agora mostra x sem e y dias)
+g2=4    # Dias
+g3=17   # Semanas (ex: "13 sem e 2 dias")
 g4=10   # Percentual
 
-# Cabeçalho (removida a coluna Dias)
-printf "\n| %-*s | %-*s | %-*s |\n" \
+# Cabeçalho com coluna Dias incluída
+printf "\n| %-*s | %-*s | %-*s | %-*s |\n" \
        $g1 "Evento"  \
-       $g3 "Período" \
+       $g2 "Dias" \
+       $g3 "Periodo " \
        $g4 "Percentual"
 
 percentual_ja_passou() {
@@ -146,12 +148,13 @@ percentual_ja_passou() {
   local dias=$((diasPassados % 7))
   local str_semanas_dias="${semanas} sem e ${dias} dias"
 
-  printf "|-%-*s-|-%-*s-|-%-*s-|\n" \
-       $g1 "" $g3 "" $g4 "" \
+  printf "|-%-*s-|-%-*s-|-%-*s-|-%-*s-|\n" \
+       $g1 "" $g2 "" $g3 "" $g4 "" \
   | tr ' ' '-'
 
-  printf "| %-*s | %-*s | %-*s |\n" \
+  printf "| %-*s | %-*s | %-*s | %-*s |\n" \
        $g1 "$titulo" \
+       $g2 "$diasPassados" \
        $g3 "$str_semanas_dias" \
        $g4 "${percentual}%"
 }
@@ -176,19 +179,20 @@ percentual_faltando() {
   local dias=$((diasRestantes % 7))
   local str_semanas_dias="${semanas} sem e ${dias} dias"
 
-  printf "|-%-*s-|-%-*s-|-%-*s-|\n" \
-       $g1 "" $g3 "" $g4 "" \
+  printf "|-%-*s-|-%-*s-|-%-*s-|-%-*s-|\n" \
+       $g1 "" $g2 "" $g3 "" $g4 "" \
   | tr ' ' '-'
 
-  printf "| %-*s | %-*s | %-*s |\n" \
+  printf "| %-*s | %-*s | %-*s | %-*s |\n" \
        $g1 "$titulo" \
+       $g2 "$diasRestantes" \
        $g3 "$str_semanas_dias" \
        $g4 "${percentual}%"
 }
 
 ################## informações dos prazos de gravidez ###################
 percentual_faltando "Casamento (tempo que falta)" "$dataISO" "2025-07-13" "2025-03-01"
-percentual_ja_passou "Gravidez (tempo que passou)  " "$dataISO" "2025-12-25" "2025-03-18"
+percentual_ja_passou "Gravidez (tempo que passou)" "$dataISO" "2025-12-25" "2025-03-18"
 percentual_faltando "Placenta (tempo que falta)" "$dataISO" "2025-06-10" "2025-03-18"
 percentual_faltando "Nascimento (tempo que falta)" "$dataISO" "2025-12-25" "2025-03-18"
 
@@ -199,7 +203,7 @@ printf "\n-------------------------------------------------------"
 ####################  Tabela ####################
 # Larguras fixas para não perder o alinhamento
 c1=13   # Período
-c2=4    # Dia
+c2=4    # Dias
 c3=6    # %
 c4=19   # Falta para acabar
 
@@ -244,4 +248,3 @@ printf "| %-*s | %-*s | %-*s | %-*s |\n" \
        $c4 "$(( 365 - diaAno )) dias ou $((52 - semanaNum)) sem."
 
 echo    # linha em branco no fim
-##################################################
