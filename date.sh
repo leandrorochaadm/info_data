@@ -187,7 +187,7 @@ percentual_faltando() {
 }
 
 ################## informações dos prazos de gravidez ###################
-percentual_faltando "Casamento (tempo que falta)" "$dataISO" "2025-07-11" "2025-03-01"
+percentual_faltando "Casamento (tempo que falta)" "$dataISO" "2025-07-13" "2025-03-01"
 percentual_ja_passou "Gravidez (tempo que passou)  " "$dataISO" "2025-12-25" "2025-03-18"
 percentual_faltando "Placenta (tempo que falta)" "$dataISO" "2025-06-10" "2025-03-18"
 percentual_faltando "Nascimento (tempo que falta)" "$dataISO" "2025-12-25" "2025-03-18"
