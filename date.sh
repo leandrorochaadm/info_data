@@ -44,7 +44,7 @@ diaAno=$(date -j -f "%Y-%m-%d" "$dataISO" +%j)
 semanaNum=$(date -j -f "%Y-%m-%d" "$dataISO" +%V)
 
 # Converte dia do mês em inteiro (remove zero à esquerda)
-diaMes=$(printf "%d" "$dia")
+diaMes=$((10#$dia))
 
 # --- Tradução do dia da semana ---
 case "$nomeDia" in
@@ -74,7 +74,7 @@ esac
 # --- Percentuais ---
 pctMesInt=$(( diaMes * 100 / ultMes ))
 totAno=$(date -j -f "%Y-%m-%d" "$ano-12-31" +%j)
-pctAnoFmt=$(awk "BEGIN{ printf \"%.2f\", $diaAno/$totAno*100 }")
+pctAnoFmt=$(awk "BEGIN{ printf \"%.2f\", $((10#$diaAno))/$totAno*100 }")
 
 # --- Cálculo de trimestre ---
 tri=$(( (10#$mes - 1) / 3 + 1 ))
@@ -244,6 +244,6 @@ printf "| %-*s | %-*s | %-*s | %-*s |\n" \
        $c1 "Ano ($ano)" \
        $c2 "$diaAno" \
        $c3 "${pctAnoFmt}%" \
-       $c4 "$(( 365 - diaAno )) dias ou $((52 - semanaNum)) sem."
+       $c4 "$(( 365 - 10#$diaAno )) dias ou $((52 - 10#$semanaNum)) sem."
 
 echo    # linha em branco no fim
