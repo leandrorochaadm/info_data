@@ -13,8 +13,8 @@ export LC_ALL=C
 export LANG=C
 
 # === CONSTANTES E CONFIGURAÇÕES ===
-readonly CASAMENTO_DATA="2025-07-13"
-readonly CASAMENTO_INICIO="2025-03-01"
+readonly CONTRATO3_DATA="2025-10-14"
+readonly CONTRATO2_DATA="2025-04-15"
 readonly GRAVIDEZ_DATA="2025-12-25"
 readonly GRAVIDEZ_INICIO="2025-03-18"
 
@@ -194,10 +194,10 @@ mostrar_tabela_prazos() {
   # Dados dos prazos
   local dados_prazo periodo_fmt
   
-  # Casamento
-  dados_prazo=($(calcular_progresso "$data_iso" "$CASAMENTO_DATA" "$CASAMENTO_INICIO" "restante"))
+  # Inicio do 3º contrato
+  dados_prazo=($(calcular_progresso "$data_iso" "$CONTRATO3_DATA" "$CONTRATO2_DATA" "restante"))
   periodo_fmt=$(formatar_periodo "${dados_prazo[0]}")
-  imprimir_linha_tabela $g1 $g2 $g3 $g4 "Casamento (tempo que falta)" "${dados_prazo[0]}" "$periodo_fmt" "${dados_prazo[1]}%"
+  imprimir_linha_tabela $g1 $g2 $g3 $g4 "3º contrato (tempo que falta)" "${dados_prazo[0]}" "$periodo_fmt" "${dados_prazo[1]}%"
   imprimir_linha_separacao $g1 $g2 $g3 $g4
   
   # Gravidez
